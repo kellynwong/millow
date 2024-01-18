@@ -92,5 +92,15 @@ describe("Escrow", () => {
       const result = await escrow.escrowAmount(1);
       expect(result).to.be.equal(tokens(5));
     });
+
+    it("Only seller can call this function", async () => {
+      // my own try
+      const accounts = await ethers.getSigners();
+      const attacker = accounts[1];
+      const attackerConnectedContract = await escrow.connect(attacker);
+      await expect(
+        attackerConnectedContract.list(1, buyer.address, tokens(10), tokens(5))
+      ).to.be.rejectedWith("ERC721: transfer from incorrect owner");
+    });
   });
 });
