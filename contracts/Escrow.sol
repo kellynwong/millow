@@ -26,4 +26,10 @@ contract Escrow {
         inspector = _inspector;
         lender = _lender;
     }
+
+    // Listing a property
+    function list(uint256 _nftID) public {
+        // Transfer NFT out of user's wallet into escrow contract
+        IERC721(nftAddress).transferFrom(msg.sender, address(this), _nftID);
+    }
 }

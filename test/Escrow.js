@@ -36,31 +36,42 @@ describe("Escrow", () => {
       inspector.address,
       lender.address
     );
+
+    // Approve property
+    transaction = await realEstate.connect(seller).approve(escrow.address, 1);
+    await transaction.wait();
+
+    // List property
+    transaction = await escrow.connect(seller).list(1);
+    await transaction.wait();
   });
 
   describe("Deployment", () => {
     it("Returns NFT Address", async () => {
       const result = await escrow.nftAddress();
-      console.log(result);
       expect(result).to.be.equal(realEstate.address);
     });
 
     it("Returns Seller Address", async () => {
       const result = await escrow.seller();
-      console.log(result);
       expect(result).to.be.equal(seller.address);
     });
 
     it("Returns Inspector Address", async () => {
       const result = await escrow.inspector();
-      console.log(result);
       expect(result).to.be.equal(inspector.address);
     });
 
     it("Returns Lender Address", async () => {
       const result = await escrow.lender();
-      console.log(result);
       expect(result).to.be.equal(lender.address);
+    });
+  });
+
+  describe("Listing", () => {
+    it("Updates ownership", async () => {
+      // checks that the owner of the nft is now the escrow contract instead of the previous owner
+      expect(await realEstate.ownerOf(1)).to.be.equal(escrow.address);
     });
   });
 });
