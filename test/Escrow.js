@@ -103,4 +103,15 @@ describe("Escrow", () => {
       ).to.be.rejectedWith("ERC721: transfer from incorrect owner");
     });
   });
+
+  describe("Deposits", () => {
+    it("Updates contract balance", async () => {
+      const transaction = await escrow
+        .connect(buyer)
+        .depositEarnest(1, { value: tokens(5) });
+      await transaction.wait();
+      const result = await escrow.getBalance();
+      expect(result).to.be.equal(tokens(5));
+    });
+  });
 });
