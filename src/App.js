@@ -14,14 +14,64 @@ import Escrow from "./abis/Escrow.json";
 import config from "./config.json";
 
 function App() {
+  // Create a hook to set the provider and pass in provider
+  const [provider, setProvider] = useState(null);
+  const [escrow, setEscrow] = useState(null);
   const [account, setAccount] = useState(null);
+  const [homes, setHomes] = useState([]);
 
   const loadBlockchainData = async () => {
     const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+    // Connect to blockchain and smart contracts and load them up to the app - ensure above has ABIs and config filepaths
+    setProvider(provider);
+    // Get network "31337" as we want to find out where the contract's being deployed to + use config.js file (where the addresses are)
+    const network = await provider.getNetwork();
+    console.log(network);
+
+    // config[network.chainId].realEstate.address;
+    // config[network.chainId].escrow.address;
+    // console.log(
+    //   config[network.chainId].realEstate.address,
+    //   config[network.chainId].escrow.address
+    // );
+
+    // This below is to get the javaScript version of the contract so we can call the various functions, requires smart contract address, smart contract ABI and ethers provider as arguments
+    const realEstate = new ethers.Contract(
+      config[network.chainId].realEstate.address,
+      RealEstate,
+      provider
+    );
+    const totalSupply = await realEstate.totalSupply();
+    // console.log(totalSupply.toString());
+
+    // Store and list out all the homes on the page
+    const homes = [];
+    for (var i = 1; i <= totalSupply; i++) {
+      const uri = await realEstate.tokenURI(i);
+      console.log(uri);
+      const response = await fetch(uri);
+      console.log(response);
+      const metadata = await response.json(); // from IPFS
+      console.log(metadata);
+      homes.push(metadata);
+    }
+    setHomes(homes);
+    console.log(homes);
+
+    // This below is to get the javaScript version of the Escrow contract
+    const escrow = new ethers.Contract(
+      config[network.chainId].escrow.address,
+      Escrow,
+      provider
+    );
+    setEscrow(escrow);
+
     console.log(provider);
     const accounts = await window.ethereum.request({
       method: "eth_requestAccounts",
     });
+    console.log(accounts);
     setAccount(accounts[0]);
     console.log(account);
   };

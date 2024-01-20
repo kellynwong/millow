@@ -24,12 +24,17 @@ async function main() {
 
   // Mint
   for (let i = 0; i < 3; i++) {
+    console.log(
+      `https://ipfs.io/ipfs/QmQVcpsjrA6cr1iJjZAodYwmPekYgbnXGo4DFubJiLc2EB/${
+        i + 1
+      }.json`
+    );
     const transaction = await realEstate
       .connect(seller)
       .mint(
-        `https://ipfs.io/ipfs/QmQUozrHLAusXDxrvsESJ3PYB3rUeUuBAvVWw6nop2uu7c/${
+        `https://ipfs.io/ipfs/QmQVcpsjrA6cr1iJjZAodYwmPekYgbnXGo4DFubJiLc2EB/${
           i + 1
-        }.png`
+        }.json`
       );
     await transaction.wait();
   }
