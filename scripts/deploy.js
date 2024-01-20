@@ -7,6 +7,10 @@
 const { ethers } = require("hardhat");
 const hre = require("hardhat");
 
+const tokens = (n) => {
+  return ethers.utils.parseUnits(n.toString(), "ether");
+};
+
 async function main() {
   // Setup accounts
   [buyer, seller, inspector, lender] = await ethers.getSigners();
@@ -39,6 +43,7 @@ async function main() {
     lender.address
   );
   await escrow.deployed();
+  console.log(`Deployed Escrow Contract at: ${escrow.address}`);
 
   // Approve properties
   for (let i = 0; i < 3; i++) {
