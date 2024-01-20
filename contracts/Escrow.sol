@@ -91,10 +91,10 @@ contract Escrow {
     // -> Transfer Funds to seller
     function finalizeSale(uint256 _nftID) public {
         require(inspectionPassed[_nftID]);
-        require(approval[_nftID][buyer[_nftID]]); // why need this?
+        require(approval[_nftID][buyer[_nftID]]);
         require(approval[_nftID][seller]);
         require(approval[_nftID][lender]);
-        require(address(this).balance >= purchasePrice[_nftID]); // why can't compare escrowAmount to purchasePrice? oh, cause need lender to fund more
+        require(address(this).balance >= purchasePrice[_nftID]); // why can't compare escrowAmount to purchasePrice? cause need lender to fund more
 
         isListed[_nftID] = false;
 
